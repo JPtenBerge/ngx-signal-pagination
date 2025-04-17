@@ -1,11 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
+import { computedWithPrev } from '../utils/computed-with-prev';
 
 @Component({
-  selector: 'ng-signal-pagination',
-  imports: [],
-  templateUrl: './ng-signal-pagination.component.html',
-  styleUrl: './ng-signal-pagination.component.css'
+	selector: 'ng-signal-pagination',
+	imports: [],
+	templateUrl: './ng-signal-pagination.component.html',
+	styleUrl: './ng-signal-pagination.component.css',
 })
-export class NgSignalPaginationComponent {
+export class NgSignalPaginationComponent<T> {
+	data = input<T>();
+	nrOfItemsPerPage = input.required<number>();
+
+	currentPage = signal(1);
+	pages = computed<number[]>(() => Array.from({ length: this.nrOfItemsPerPage() }, (_, index) => index + 1));
+
 
 }
