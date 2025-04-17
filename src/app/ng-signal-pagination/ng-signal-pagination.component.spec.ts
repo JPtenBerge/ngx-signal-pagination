@@ -1,15 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { render, screen } from '@testing-library/angular';
 
 import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
 
 describe('NgSignalPaginationComponent', () => {
-	let sut: NgSignalPaginationComponent<any>;
-	let fixture: ComponentFixture<NgSignalPaginationComponent<any>>;
-	let shows: { title: string; rating: number }[];
-
-	beforeEach(async () => {
-		shows = [
+	it('determines the number of pages', async () => {
+		let shows = [
 			{ title: 'Game of Thrones', rating: 9.5 },
 			{ title: 'Black Mirror', rating: 9.5 },
 			{ title: 'Prison Break', rating: 7 },
@@ -24,16 +20,11 @@ describe('NgSignalPaginationComponent', () => {
 			{ title: 'Squid Game', rating: 7.5 },
 			{ title: 'Now & Again', rating: 8 },
 		];
-		TestBed.configureTestingModule({
-			imports: [NgSignalPaginationComponent],
-		});
 
-		fixture = TestBed.createComponent(NgSignalPaginationComponent);
-		fixture.componentRef.setInput('data', shows);
-		sut = fixture.componentInstance;
-	});
+		await render(NgSignalPaginationComponent, { inputs: { data: shows, nrOfItemsPerPage: 4 } });
 
-	it('determines the number of pages', () => {
-		expect(4).toBe(14);
+		const list = screen.getByRole('list');
+
+		expect(list.children.length).toBe(4);
 	});
 });
