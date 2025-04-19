@@ -31,6 +31,23 @@ describe('NgSignalPaginationComponent', () => {
 		expect(fixture.componentInstance.pageData()).toEqual(getShows().slice(5, 10));
 	});
 
+	it('goes to the next page', async () => {
+		let { fixture } = await renderPagination();
+		let nextLi = [...screen.getByRole('list').children].at(-1)!;
+		fireEvent(nextLi.children[0], new MouseEvent('click'));
+		expect(fixture.componentInstance.currentPage()).toBe(2);
+	});
+
+	it('goes to the previous page', async () => {
+		let { fixture } = await renderPagination();
+		fixture.componentInstance.currentPage.set(3);
+		let previousLi = screen.getByRole('list').children[0];
+		fireEvent(previousLi.children[0], new MouseEvent('click'));
+		expect(fixture.componentInstance.currentPage()).toBe(2);
+	});
+
+	it('goes to a specific page', async () => {});
+
 	describe('specifying a custom template', () => {
 		it('renders pages', async () => {
 			@Component({
