@@ -3,13 +3,13 @@
 A pagination component that:
 
 - uses Angular's signals all the way
-- works with in-memory collections as well as retrieving 
+- works with in-memory collections as well as retrieving data async
 - is tailored for styling with Tailwind
 - is type-safe
 
 ## Roadmap
 
-- Easy integration with TanStack Query would be nice
+- easy integration with [TanStack Query](https://tanstack.com/query/latest/docs/framework/angular/overview) would be nice
 
 ```html
 <ng-signal-pagination [query]="productsQuery" />

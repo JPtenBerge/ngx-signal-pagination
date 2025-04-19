@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, contentChild, input, Signal, signal, TemplateRef } from '@angular/core';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 import { PaginationOptions } from '../types/pagination-options';
 @Component({
 	selector: 'ng-signal-pagination',
-	imports: [NgClass],
+	imports: [NgClass, NgTemplateOutlet],
 	templateUrl: './ng-signal-pagination.component.html',
 	styleUrl: './ng-signal-pagination.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,6 +12,15 @@ import { PaginationOptions } from '../types/pagination-options';
 export class NgSignalPaginationComponent<T> {
 	data = input.required<T[]>();
 	config = input.required<PaginationOptions>();
+
+	paginationTemplate = contentChild<
+		TemplateRef<{
+			currentPage: Signal<number>;
+			pages: Signal<number[]>;
+			next: () => void;
+			previous: () => void;
+		}>
+	>('paginationTemplate');
 
 	currentPage = signal(1);
 	pages = computed<number[]>(() =>
@@ -23,11 +32,20 @@ export class NgSignalPaginationComponent<T> {
 		return this.data().slice(start, end);
 	});
 
+	constructor() {
+		this.next = this.next.bind(this);
+		this.previous = this.previous.bind(this);
+	}
+
 	goTo(page: number) {
 		this.currentPage.set(page);
 	}
 
-	next() {}
+	next() {
+		this.currentPage.update(current => current + 1);
+	}
 
-	previous() {}
+	previous() {
+		this.currentPage.update(current => current - 1);
+	}
 }

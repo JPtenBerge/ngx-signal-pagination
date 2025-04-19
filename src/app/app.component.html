@@ -11,8 +11,22 @@
 	</ul>
 </div>
 
-
-
 <h2 class="text-2xl mb-2 mt-5">Async data retrieval</h2>
 
 To be done.
+
+<h2 class="text-2xl mb-2 mt-5">Custom template</h2>
+
+To be done.
+<ng-signal-pagination [data]="shows" [config]="paging" #pagination>
+	<ng-template #paginationTemplate let-currentPage="currentPage" let-pages="pages" let-next="next">
+		CUSTOM current: {{currentPage()}}
+		<ol>
+			<li>&lt;</li>
+			@for (page of pages(); track page) {
+				<li (click)="next()">p{{ page }}</li>
+			}
+			<li>&gt;</li>
+		</ol>
+	</ng-template>
+</ng-signal-pagination>

@@ -1,45 +1,49 @@
-<ol class="flex gap-3 items-center">
-	<li>
-		<a class="btn" (click)="previous()" [ngClass]="{ 'opacity-50 hover:cursor-auto': currentPage() === 1 }">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#ccc"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="arcs"
-				style="--darkreader-inline-stroke: var(--darkreader-text-cccccc, #c8c3bc)"
-				data-darkreader-inline-stroke=""
-			>
-				<path d="M15 18l-6-6 6-6"></path>
-			</svg>
-		</a>
-	</li>
+@if (paginationTemplate(); as paginationTemplate) {
+	<ng-container *ngTemplateOutlet="paginationTemplate; context: { currentPage, pages, next, previous }"></ng-container>
+} @else {
+	<ol class="flex gap-3 items-center">
+		<li>
+			<a class="btn" (click)="previous()" [ngClass]="{ 'opacity-50 hover:cursor-auto': currentPage() === 1 }">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="#ccc"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="arcs"
+					style="--darkreader-inline-stroke: var(--darkreader-text-cccccc, #c8c3bc)"
+					data-darkreader-inline-stroke=""
+				>
+					<path d="M15 18l-6-6 6-6"></path>
+				</svg>
+			</a>
+		</li>
 
-	@for (page of pages(); track page) {
-		<li (click)="goTo(page)">{{ page }}</li>
-	}
+		@for (page of pages(); track page) {
+			<li (click)="goTo(page)">{{ page }}</li>
+		}
 
-	<li>
-		<a class="btn" (click)="next()" [ngClass]="{ 'opacity-50 hover:cursor-auto': currentPage() === pages().length }">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#8899a4"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="arcs"
-				style="--darkreader-inline-stroke: var(--darkreader-text-8899a4, #a69e92)"
-				data-darkreader-inline-stroke=""
-			>
-				<path d="M9 18l6-6-6-6"></path>
-			</svg>
-		</a>
-	</li>
-</ol>
+		<li>
+			<a class="btn" (click)="next()" [ngClass]="{ 'opacity-50 hover:cursor-auto': currentPage() === pages().length }">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="#8899a4"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="arcs"
+					style="--darkreader-inline-stroke: var(--darkreader-text-8899a4, #a69e92)"
+					data-darkreader-inline-stroke=""
+				>
+					<path d="M9 18l6-6-6-6"></path>
+				</svg>
+			</a>
+		</li>
+	</ol>
+}
