@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { computedWithPrev } from '../utils/computed-with-prev';
+import { PaginationOptions } from '../types/pagination-options';
 
 @Component({
 	selector: 'ng-signal-pagination',
@@ -10,12 +10,19 @@ import { computedWithPrev } from '../utils/computed-with-prev';
 })
 export class NgSignalPaginationComponent<T> {
 	data = input.required<T[]>();
-	nrOfItemsPerPage = input.required<number>();
+	config = input.required<PaginationOptions>();
 
 	currentPage = signal(1);
 	pages = computed<number[]>(() =>
-		Array.from({ length: Math.ceil(this.data().length / this.nrOfItemsPerPage()) }, (_, index) => index + 1),
+		Array.from({ length: Math.ceil(this.data().length / this.config().nrOfItemsPerPage) }, (_, index) => index + 1),
 	);
+	pageData = computed(() => {
+		let start = (this.currentPage() - 1) * this.config().nrOfItemsPerPage;
+		let end = start + this.config().nrOfItemsPerPage;
+		return this.data().slice(start, end);
+	});
 
-
+	goToPage(page: number) {
+		this.currentPage.set(page);
+	}
 }

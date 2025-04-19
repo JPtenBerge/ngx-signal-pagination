@@ -1,3 +1,15 @@
 <h1>ng-signal-pagination demos</h1>
 
-<ng-signal-pagination [data]="shows" [nrOfItemsPerPage]="5" />
+<h2>In-memory data</h2>
+
+<ng-signal-pagination [data]="shows" [config]="paging" #pagination />
+
+<ul>
+	@for (show of pagination.pageData(); track show.title) {
+		<li>{{ show.title }} gets a {{ show.rating }}</li>
+	}
+</ul>
+
+<h2>Async data retrieval</h2>
+
+To be done.

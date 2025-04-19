@@ -1,5 +1,5 @@
 <ol>
 	@for (page of pages(); track page) {
-		<li>{{ page }}</li>
+		<li (click)="goToPage(page)">{{ page }}</li>
 	}
 </ol>

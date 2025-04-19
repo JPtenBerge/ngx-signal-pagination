@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NgSignalPaginationComponent } from './ng-signal-pagination/ng-signal-pagination.component';
-import { PaginationOptions } from './types/pagination-options';
+import { Show } from './show.spec';
 
-@Component({
-	selector: 'app-root',
-	imports: [RouterOutlet, NgSignalPaginationComponent],
-	templateUrl: './app.component.html',
-	styleUrl: './app.component.css',
-})
-export class AppComponent {
-	shows = [
+export const getShows = (): Show[] => {
+	return [
 		{ title: 'Game of Thrones', rating: 9.5 },
 		{ title: 'Black Mirror', rating: 9.5 },
 		{ title: 'Prison Break', rating: 7 },
@@ -25,6 +16,4 @@ export class AppComponent {
 		{ title: 'Squid Game', rating: 7.5 },
 		{ title: 'Now & Again', rating: 8 },
 	];
-
-	paging: PaginationOptions = { nrOfItemsPerPage: 5 };
-}
+};

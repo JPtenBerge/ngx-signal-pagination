@@ -1,30 +1,31 @@
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/angular';
+import { describe, expect, it, vi } from 'vitest';
+import { render, RenderResult, screen } from '@testing-library/angular';
 
 import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
+import { Show } from '../test-helpers/show.spec';
+import { getShows } from '../test-helpers/shows.data.spec';
 
 describe('NgSignalPaginationComponent', () => {
 	it('determines the number of pages', async () => {
-		let shows = [
-			{ title: 'Game of Thrones', rating: 9.5 },
-			{ title: 'Black Mirror', rating: 9.5 },
-			{ title: 'Prison Break', rating: 7 },
-			{ title: 'Lost', rating: 8 },
-			{ title: 'Breaking Bad', rating: 9 },
-			{ title: 'Better Call Saul', rating: 9 },
-			{ title: 'Friends', rating: 8 },
-			{ title: 'Dexter', rating: 7.5 },
-			{ title: 'The Gentlemen', rating: 9 },
-			{ title: 'Ozark', rating: 8 },
-			{ title: 'Alice in Borderland', rating: 7.5 },
-			{ title: 'Squid Game', rating: 7.5 },
-			{ title: 'Now & Again', rating: 8 },
-		];
-
-		await render(NgSignalPaginationComponent, { inputs: { data: shows, nrOfItemsPerPage: 4 } });
-
+		await renderPagination(5);
 		const list = screen.getByRole('list');
-
-		expect(list.children.length).toBe(4);
+		expect(list.children.length).toBe(3);
 	});
+
+	it('offers paginated data', async () => {
+		let result = await renderPagination();
+		expect(result.fixture.componentInstance.pageData()).toEqual(getShows().slice(0, 5));
+	});
+
+	it('responds to page changes', async () => {
+		let result = await renderPagination();
+		result.fixture.componentInstance.currentPage.set(2);
+		expect(result.fixture.componentInstance.pageData()).toEqual(getShows().slice(5, 10));
+	});
+
+	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgSignalPaginationComponent<Show>>> => {
+		return (await await render(NgSignalPaginationComponent, {
+			inputs: { data: getShows(), config: { nrOfItemsPerPage } },
+		})) as RenderResult<NgSignalPaginationComponent<Show>>;
+	};
 });
