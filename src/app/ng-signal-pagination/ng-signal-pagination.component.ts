@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { PaginationOptions } from '../types/pagination-options';
+import { NgClass } from '@angular/common';
 
+import { PaginationOptions } from '../types/pagination-options';
 @Component({
 	selector: 'ng-signal-pagination',
-	imports: [],
+	imports: [NgClass],
 	templateUrl: './ng-signal-pagination.component.html',
 	styleUrl: './ng-signal-pagination.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +23,11 @@ export class NgSignalPaginationComponent<T> {
 		return this.data().slice(start, end);
 	});
 
-	goToPage(page: number) {
+	goTo(page: number) {
 		this.currentPage.set(page);
 	}
+
+	next() {}
+
+	previous() {}
 }

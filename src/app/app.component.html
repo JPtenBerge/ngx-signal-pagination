@@ -1,15 +1,18 @@
-<h1>ng-signal-pagination demos</h1>
+<h1 class="text-3xl mb-2">ng-signal-pagination demos</h1>
 
-<h2>In-memory data</h2>
+<h2 class="text-2xl mb-2 mt-5">In-memory data</h2>
 
-<ng-signal-pagination [data]="shows" [config]="paging" #pagination />
+<div class="flex flex-col-reverse">
+	<ng-signal-pagination [data]="shows" [config]="paging" #pagination />
+	<ul class="list-[square] ml-4">
+		@for (show of pagination.pageData(); track show.title) {
+			<li>{{ show.title }} gets a {{ show.rating }}</li>
+		}
+	</ul>
+</div>
 
-<ul>
-	@for (show of pagination.pageData(); track show.title) {
-		<li>{{ show.title }} gets a {{ show.rating }}</li>
-	}
-</ul>
 
-<h2>Async data retrieval</h2>
+
+<h2 class="text-2xl mb-2 mt-5">Async data retrieval</h2>
 
 To be done.
