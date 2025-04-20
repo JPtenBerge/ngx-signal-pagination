@@ -1,13 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Component, viewChild } from '@angular/core';
-import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
-import userEvent from '@testing-library/user-event';
+import { render, RenderResult, screen } from '@testing-library/angular';
+import userEvent, { UserEvent } from '@testing-library/user-event';
 
 import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
 import { Show } from '../test-helpers/show';
 import { getShows } from '../test-helpers/shows.data';
 
 describe('NgSignalPaginationComponent', () => {
+	let user: UserEvent;
+
+	beforeEach(() => {
+		user = userEvent.setup();
+	});
+
 	it('determines the number of pages', async () => {
 		await renderPagination(5);
 		const list = screen.getByRole('list');
@@ -28,14 +34,14 @@ describe('NgSignalPaginationComponent', () => {
 	it('responds to page changes when the user clicks the page numbers ', async () => {
 		let { fixture } = await renderPagination();
 		let secondPageElem = screen.getByRole('list').children[2];
-		fireEvent(secondPageElem, new MouseEvent('click'));
+		await user.click(secondPageElem);
 		expect(fixture.componentInstance.pageData()).toEqual(getShows().slice(5, 10));
 	});
 
 	it('goes to the next page', async () => {
 		let { fixture } = await renderPagination();
 		let nextLi = [...screen.getByRole('list').children].at(-1)!;
-		fireEvent(nextLi.children[0], new MouseEvent('click'));
+		await user.click(nextLi.children[0]);
 		expect(fixture.componentInstance.currentPage()).toBe(2);
 	});
 
@@ -43,7 +49,7 @@ describe('NgSignalPaginationComponent', () => {
 		let { fixture } = await renderPagination();
 		fixture.componentInstance.currentPage.set(3);
 		let previousLi = screen.getByRole('list').children[0];
-		fireEvent(previousLi.children[0], new MouseEvent('click'));
+		await user.click(previousLi.children[0]);
 		expect(fixture.componentInstance.currentPage()).toBe(2);
 	});
 
@@ -92,7 +98,6 @@ describe('NgSignalPaginationComponent', () => {
 				paging = { nrOfItemsPerPage: 5 };
 			}
 
-			const user = userEvent.setup();
 			let { fixture } = await render(FixtureComponent);
 			let btnNext = screen.getByRole('button', { name: 'next' });
 			let btnPrevious = screen.getByRole('button', { name: 'prev' });
