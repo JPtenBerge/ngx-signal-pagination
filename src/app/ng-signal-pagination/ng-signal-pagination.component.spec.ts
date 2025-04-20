@@ -53,7 +53,12 @@ describe('NgSignalPaginationComponent', () => {
 		expect(fixture.componentInstance.currentPage()).toBe(2);
 	});
 
-	it('goes to a specific page', async () => {});
+	it('goes to a specific page', async () => {
+		let { fixture } = await renderPagination();
+		let thirdPageLi = screen.getByRole('list').children[3];
+		await user.click(thirdPageLi.children[0]);
+		expect(fixture.componentInstance.currentPage()).toBe(3);
+	});
 
 	describe('specifying a custom template', () => {
 		it('renders pages', async () => {

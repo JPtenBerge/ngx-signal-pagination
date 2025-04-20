@@ -23,7 +23,9 @@
 		</li>
 
 		@for (page of pages(); track page) {
-			<li (click)="goTo(page)">{{ page }}</li>
+			<li>
+				<a (click)="goTo(page)">{{ page }}</a>
+			</li>
 		}
 
 		<li>
