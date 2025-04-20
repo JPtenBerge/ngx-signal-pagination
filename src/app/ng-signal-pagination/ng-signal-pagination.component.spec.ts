@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Component, viewChild } from '@angular/core';
 import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 
 import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
 import { Show } from '../test-helpers/show';
@@ -91,12 +92,14 @@ describe('NgSignalPaginationComponent', () => {
 				paging = { nrOfItemsPerPage: 5 };
 			}
 
+			const user = userEvent.setup();
 			let { fixture } = await render(FixtureComponent);
 			let btnNext = screen.getByRole('button', { name: 'next' });
 			let btnPrevious = screen.getByRole('button', { name: 'prev' });
-			btnNext.click();
-			btnNext.click();
-			btnPrevious.click();
+			await user.click(btnNext);
+			await user.click(btnNext);
+			await user.click(btnPrevious);
+
 			expect(fixture.componentInstance.pagination().currentPage()).toBe(2);
 		});
 	});
