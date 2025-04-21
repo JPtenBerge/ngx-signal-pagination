@@ -11,9 +11,11 @@ import { getShows } from '../test-helpers/shows.data';
 
 describe('NgSignalPaginationComponent', () => {
 	let user: UserEvent;
+	let routerMock: { navigate: () => Promise<boolean> };
 
 	beforeEach(() => {
 		user = userEvent.setup();
+		routerMock = { navigate: vi.fn().mockImplementation(() => Promise.resolve(true)) };
 	});
 
 	it('determines the number of pages', async () => {
@@ -25,6 +27,21 @@ describe('NgSignalPaginationComponent', () => {
 	it('offers paginated data', async () => {
 		let { fixture } = await renderPagination();
 		expect(fixture.componentInstance.pageData()).toEqual(getShows().slice(0, 5));
+	});
+
+	it('does not append the querystring for the first page', async () => {
+		// Arrange
+		let { fixture } = await renderPagination();
+
+		// Act
+		fixture.componentInstance.currentPage.set(3);
+		fixture.componentInstance.currentPage.set(1);
+
+		// Assert
+		expect(routerMock.navigate).toHaveBeenLastCalledWith(
+			expect.any(Array),
+			expect.objectContaining({ queryParams: { page: null } }),
+		);
 	});
 
 	it('responds to page changes through its signal', async () => {
@@ -43,8 +60,6 @@ describe('NgSignalPaginationComponent', () => {
 	it('goes to the next page', async () => {
 		// Arrange
 		let { fixture } = await renderPagination();
-		let router = TestBed.inject(Router);
-		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
 		// Act
 		let nextLi = [...screen.getByRole('list').children].at(-1)!;
@@ -52,7 +67,7 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(2);
-		expect(router.navigate).toHaveBeenLastCalledWith(
+		expect(routerMock.navigate).toHaveBeenLastCalledWith(
 			expect.any(Array),
 			expect.objectContaining({ queryParams: { page: 2 } }),
 		);
@@ -61,8 +76,6 @@ describe('NgSignalPaginationComponent', () => {
 	it('goes to the previous page', async () => {
 		// Arrange
 		let { fixture } = await renderPagination();
-		let router = TestBed.inject(Router);
-		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
 		// Act
 		fixture.componentInstance.currentPage.set(3);
@@ -71,7 +84,7 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(2);
-		expect(router.navigate).toHaveBeenLastCalledWith(
+		expect(routerMock.navigate).toHaveBeenLastCalledWith(
 			expect.any(Array),
 			expect.objectContaining({ queryParams: { page: 2 } }),
 		);
@@ -80,8 +93,6 @@ describe('NgSignalPaginationComponent', () => {
 	it('goes to a specific page', async () => {
 		// Arrange
 		let { fixture } = await renderPagination();
-		let router = TestBed.inject(Router);
-		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
 		// Act
 		let pageLinks = screen.getAllByRole('link');
@@ -89,7 +100,7 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(3);
-		expect(router.navigate).toHaveBeenLastCalledWith(
+		expect(routerMock.navigate).toHaveBeenLastCalledWith(
 			expect.any(Array),
 			expect.objectContaining({ queryParams: { page: 3 } }),
 		);
@@ -152,7 +163,7 @@ describe('NgSignalPaginationComponent', () => {
 	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgSignalPaginationComponent<Show>>> => {
 		return (await render(NgSignalPaginationComponent, {
 			inputs: { data: getShows(), config: { nrOfItemsPerPage } },
-			providers: [Router],
+			providers: [{ provide: Router, useValue: routerMock }],
 		})) as RenderResult<NgSignalPaginationComponent<Show>>;
 	};
 });

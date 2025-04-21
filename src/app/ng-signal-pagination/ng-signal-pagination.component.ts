@@ -51,7 +51,8 @@ export class NgSignalPaginationComponent<T> {
 		this.previous = this.previous.bind(this);
 
 		effect(() => {
-			this.router.navigate([], { queryParams: { page: this.currentPage() }, queryParamsHandling: 'merge' });
+			let value = this.currentPage() === 1 ? null : this.currentPage();
+			this.router.navigate([], { queryParams: { page: value }, queryParamsHandling: 'merge' });
 		});
 	}
 
