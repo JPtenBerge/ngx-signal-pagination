@@ -3,6 +3,7 @@ import {
 	Component,
 	computed,
 	contentChild,
+	effect,
 	inject,
 	input,
 	Signal,
@@ -48,11 +49,14 @@ export class NgSignalPaginationComponent<T> {
 	constructor() {
 		this.next = this.next.bind(this);
 		this.previous = this.previous.bind(this);
+
+		effect(() => {
+			this.router.navigate([], { queryParams: { page: this.currentPage() }, queryParamsHandling: 'merge' });
+		});
 	}
 
 	goTo(page: number) {
 		this.currentPage.set(page);
-		this.router.navigate([], { queryParams: { page }, queryParamsHandling: 'merge' });
 	}
 
 	next() {

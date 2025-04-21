@@ -41,30 +41,58 @@ describe('NgSignalPaginationComponent', () => {
 	});
 
 	it('goes to the next page', async () => {
+		// Arrange
 		let { fixture } = await renderPagination();
-		let nextLi = [...screen.getByRole('list').children].at(-1)!;
-		await user.click(nextLi.children[0]);
-		expect(fixture.componentInstance.currentPage()).toBe(2);
-	});
-
-	it('goes to the previous page', async () => {
-		let { fixture } = await renderPagination();
-		fixture.componentInstance.currentPage.set(3);
-		let previousLi = screen.getByRole('list').children[0];
-		await user.click(previousLi.children[0]);
-		expect(fixture.componentInstance.currentPage()).toBe(2);
-	});
-
-	it('goes to a specific page', async () => {
-		let { fixture } = await renderPagination();
-
 		let router = TestBed.inject(Router);
 		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
 
+		// Act
+		let nextLi = [...screen.getByRole('list').children].at(-1)!;
+		await user.click(nextLi.children[0]);
+
+		// Assert
+		expect(fixture.componentInstance.currentPage()).toBe(2);
+		expect(router.navigate).toHaveBeenLastCalledWith(
+			expect.any(Array),
+			expect.objectContaining({ queryParams: { page: 2 } }),
+		);
+	});
+
+	it('goes to the previous page', async () => {
+		// Arrange
+		let { fixture } = await renderPagination();
+		let router = TestBed.inject(Router);
+		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+
+		// Act
+		fixture.componentInstance.currentPage.set(3);
+		let previousLi = screen.getByRole('list').children[0];
+		await user.click(previousLi.children[0]);
+
+		// Assert
+		expect(fixture.componentInstance.currentPage()).toBe(2);
+		expect(router.navigate).toHaveBeenLastCalledWith(
+			expect.any(Array),
+			expect.objectContaining({ queryParams: { page: 2 } }),
+		);
+	});
+
+	it('goes to a specific page', async () => {
+		// Arrange
+		let { fixture } = await renderPagination();
+		let router = TestBed.inject(Router);
+		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+
+		// Act
 		let pageLinks = screen.getAllByRole('link');
 		await user.click(pageLinks.at(-1)!);
+
+		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(3);
-		expect(router.navigate).toHaveBeenCalledWith(expect.any(Array), expect.objectContaining({ queryParams: { page: 3 } }));
+		expect(router.navigate).toHaveBeenLastCalledWith(
+			expect.any(Array),
+			expect.objectContaining({ queryParams: { page: 3 } }),
+		);
 	});
 
 	describe('specifying a custom template', () => {
