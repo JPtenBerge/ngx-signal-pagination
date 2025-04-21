@@ -1,7 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, contentChild, input, Signal, signal, TemplateRef } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	contentChild,
+	inject,
+	input,
+	Signal,
+	signal,
+	TemplateRef,
+} from '@angular/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 import { PaginationOptions } from '../types/pagination-options';
+import { Router } from '@angular/router';
 @Component({
 	selector: 'ng-signal-pagination',
 	imports: [NgClass, NgTemplateOutlet],
@@ -10,6 +21,8 @@ import { PaginationOptions } from '../types/pagination-options';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgSignalPaginationComponent<T> {
+	router = inject(Router);
+
 	data = input.required<T[]>();
 	config = input.required<PaginationOptions>();
 
@@ -39,6 +52,7 @@ export class NgSignalPaginationComponent<T> {
 
 	goTo(page: number) {
 		this.currentPage.set(page);
+		this.router.navigate([], { queryParams: { page }, queryParamsHandling: 'merge' });
 	}
 
 	next() {

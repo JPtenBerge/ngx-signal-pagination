@@ -1,5 +1,7 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
 import { render, RenderResult, screen } from '@testing-library/angular';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
@@ -34,7 +36,7 @@ describe('NgSignalPaginationComponent', () => {
 	it('responds to page changes when the user clicks the page numbers ', async () => {
 		let { fixture } = await renderPagination();
 		let secondPageElem = screen.getByRole('list').children[2];
-		await user.click(secondPageElem);
+		await user.click(secondPageElem.children[0]);
 		expect(fixture.componentInstance.pageData()).toEqual(getShows().slice(5, 10));
 	});
 
@@ -55,9 +57,14 @@ describe('NgSignalPaginationComponent', () => {
 
 	it('goes to a specific page', async () => {
 		let { fixture } = await renderPagination();
-		let thirdPageLi = screen.getByRole('list').children[3];
-		await user.click(thirdPageLi.children[0]);
+
+		let router = TestBed.inject(Router);
+		vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+
+		let pageLinks = screen.getAllByRole('link');
+		await user.click(pageLinks.at(-1)!);
 		expect(fixture.componentInstance.currentPage()).toBe(3);
+		expect(router.navigate).toHaveBeenCalledWith(expect.any(Array), expect.objectContaining({ queryParams: { page: 3 } }));
 	});
 
 	describe('specifying a custom template', () => {
@@ -117,6 +124,7 @@ describe('NgSignalPaginationComponent', () => {
 	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgSignalPaginationComponent<Show>>> => {
 		return (await render(NgSignalPaginationComponent, {
 			inputs: { data: getShows(), config: { nrOfItemsPerPage } },
+			providers: [Router],
 		})) as RenderResult<NgSignalPaginationComponent<Show>>;
 	};
 });

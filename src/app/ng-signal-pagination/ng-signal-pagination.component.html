@@ -24,7 +24,7 @@
 
 		@for (page of pages(); track page) {
 			<li>
-				<a (click)="goTo(page)">{{ page }}</a>
+				<a href="?page={{ page }}" (click)="goTo(page); $event.stopPropagation(); $event.preventDefault()">{{ page }}</a>
 			</li>
 		}
 
