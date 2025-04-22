@@ -33,6 +33,7 @@ export class NgSignalPaginationComponent<T> {
 			pages: Signal<number[]>;
 			next: () => void;
 			previous: () => void;
+			goTo: (page: number) => void;
 		}>
 	>('paginationTemplate');
 
@@ -49,6 +50,7 @@ export class NgSignalPaginationComponent<T> {
 	constructor() {
 		this.next = this.next.bind(this);
 		this.previous = this.previous.bind(this);
+		this.goTo = this.goTo.bind(this);
 	}
 
 	goTo(page: number) {
