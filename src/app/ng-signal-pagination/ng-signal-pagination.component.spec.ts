@@ -1,5 +1,4 @@
 import { Component, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
 import userEvent, { UserEvent } from '@testing-library/user-event';
@@ -11,7 +10,6 @@ import { SimpleQueryStringService } from '../services/simple-query-string.servic
 
 describe('Component: NgSignalPagination', () => {
 	let user: UserEvent;
-	let routerMock: { navigate: () => Promise<boolean> };
 	let simpleQueryStringServiceMock: {
 		setPageInQueryString: Mock<() => void>;
 		getPageFromQueryString: Mock<() => number | null>;
@@ -19,7 +17,6 @@ describe('Component: NgSignalPagination', () => {
 
 	beforeEach(() => {
 		user = userEvent.setup();
-		routerMock = { navigate: vi.fn().mockImplementation(() => Promise.resolve(true)) };
 		simpleQueryStringServiceMock = { setPageInQueryString: vi.fn(), getPageFromQueryString: vi.fn().mockReturnValue(null) };
 	});
 
