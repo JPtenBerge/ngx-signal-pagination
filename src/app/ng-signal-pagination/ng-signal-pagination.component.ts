@@ -3,7 +3,7 @@ import {
 	Component,
 	computed,
 	contentChild,
-	effect,
+	HostListener,
 	inject,
 	input,
 	Signal,
@@ -13,7 +13,8 @@ import {
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 import { PaginationOptions } from '../types/pagination-options';
-import { Router } from '@angular/router';
+import { SimpleQueryStringService } from '../services/simple-query-string.service';
+
 @Component({
 	selector: 'ng-signal-pagination',
 	imports: [NgClass, NgTemplateOutlet],
@@ -22,11 +23,10 @@ import { Router } from '@angular/router';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgSignalPaginationComponent<T> {
-	router = inject(Router);
+	simpleQueryString = inject(SimpleQueryStringService);
 
 	data = input.required<T[]>();
 	config = input.required<PaginationOptions>();
-
 	paginationTemplate = contentChild<
 		TemplateRef<{
 			currentPage: Signal<number>;
@@ -36,7 +36,7 @@ export class NgSignalPaginationComponent<T> {
 		}>
 	>('paginationTemplate');
 
-	currentPage = signal(1);
+	currentPage = signal(this.simpleQueryString.getPageFromQueryString() ?? 1);
 	pages = computed<number[]>(() =>
 		Array.from({ length: Math.ceil(this.data().length / this.config().nrOfItemsPerPage) }, (_, index) => index + 1),
 	);
@@ -49,22 +49,28 @@ export class NgSignalPaginationComponent<T> {
 	constructor() {
 		this.next = this.next.bind(this);
 		this.previous = this.previous.bind(this);
-
-		effect(() => {
-			let value = this.currentPage() === 1 ? null : this.currentPage();
-			this.router.navigate([], { queryParams: { page: value }, queryParamsHandling: 'merge' });
-		});
 	}
 
 	goTo(page: number) {
 		this.currentPage.set(page);
+		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}
 
 	next() {
 		this.currentPage.update(current => current + 1);
+		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}
 
 	previous() {
 		this.currentPage.update(current => current - 1);
+		this.simpleQueryString.setPageInQueryString(this.currentPage());
+	}
+
+	@HostListener('window:popstate')
+	updatePage() {
+		let page = this.simpleQueryString.getPageFromQueryString();
+		if (page && page !== this.currentPage()) {
+			this.currentPage.set(page);
+		}
 	}
 }

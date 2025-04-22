@@ -1,21 +1,26 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { TestBed } from '@angular/core/testing';
-import { render, RenderResult, screen } from '@testing-library/angular';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
 import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
 import { Show } from '../test-helpers/show';
 import { getShows } from '../test-helpers/shows.data';
+import { SimpleQueryStringService } from '../services/simple-query-string.service';
 
-describe('NgSignalPaginationComponent', () => {
+describe('Component: NgSignalPagination', () => {
 	let user: UserEvent;
 	let routerMock: { navigate: () => Promise<boolean> };
+	let simpleQueryStringServiceMock: {
+		setPageInQueryString: Mock<() => void>;
+		getPageFromQueryString: Mock<() => number | null>;
+	};
 
 	beforeEach(() => {
 		user = userEvent.setup();
 		routerMock = { navigate: vi.fn().mockImplementation(() => Promise.resolve(true)) };
+		simpleQueryStringServiceMock = { setPageInQueryString: vi.fn(), getPageFromQueryString: vi.fn().mockReturnValue(null) };
 	});
 
 	it('determines the number of pages', async () => {
@@ -27,21 +32,6 @@ describe('NgSignalPaginationComponent', () => {
 	it('offers paginated data', async () => {
 		let { fixture } = await renderPagination();
 		expect(fixture.componentInstance.pageData()).toEqual(getShows().slice(0, 5));
-	});
-
-	it('does not append the querystring for the first page', async () => {
-		// Arrange
-		let { fixture } = await renderPagination();
-
-		// Act
-		fixture.componentInstance.currentPage.set(3);
-		fixture.componentInstance.currentPage.set(1);
-
-		// Assert
-		expect(routerMock.navigate).toHaveBeenLastCalledWith(
-			expect.any(Array),
-			expect.objectContaining({ queryParams: { page: null } }),
-		);
 	});
 
 	it('responds to page changes through its signal', async () => {
@@ -67,10 +57,7 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(2);
-		expect(routerMock.navigate).toHaveBeenLastCalledWith(
-			expect.any(Array),
-			expect.objectContaining({ queryParams: { page: 2 } }),
-		);
+		expect(simpleQueryStringServiceMock.setPageInQueryString).toHaveBeenCalledWith(2);
 	});
 
 	it('goes to the previous page', async () => {
@@ -84,10 +71,7 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(2);
-		expect(routerMock.navigate).toHaveBeenLastCalledWith(
-			expect.any(Array),
-			expect.objectContaining({ queryParams: { page: 2 } }),
-		);
+		expect(simpleQueryStringServiceMock.setPageInQueryString).toHaveBeenCalledWith(2);
 	});
 
 	it('goes to a specific page', async () => {
@@ -100,10 +84,42 @@ describe('NgSignalPaginationComponent', () => {
 
 		// Assert
 		expect(fixture.componentInstance.currentPage()).toBe(3);
-		expect(routerMock.navigate).toHaveBeenLastCalledWith(
-			expect.any(Array),
-			expect.objectContaining({ queryParams: { page: 3 } }),
-		);
+		expect(simpleQueryStringServiceMock.setPageInQueryString).toHaveBeenCalledWith(3);
+	});
+
+	it('responds to URL changes through the history API', async () => {
+		let { fixture } = await renderPagination();
+		simpleQueryStringServiceMock.getPageFromQueryString.mockReturnValue(42);
+		fireEvent(window, new PopStateEvent('popstate'));
+		expect(fixture.componentInstance.currentPage()).toBe(42);
+	});
+
+	it('ignores URL changes with no page information', async () => {
+		// Arrange
+		let { fixture } = await renderPagination();
+		fixture.componentInstance.currentPage.set(42);
+		simpleQueryStringServiceMock.getPageFromQueryString.mockReturnValue(null);
+
+		// Act
+		fireEvent(window, new PopStateEvent('popstate'));
+
+		// Assert
+		expect(fixture.componentInstance.currentPage()).toBe(42);
+	});
+
+	it('ignores URL changes if the current page is already set to the value in the URL', async () => {
+		// Arrange
+		let { fixture } = await renderPagination();
+		fixture.componentInstance.currentPage.set(42);
+		simpleQueryStringServiceMock.getPageFromQueryString.mockReturnValue(42);
+		vi.spyOn(fixture.componentInstance.currentPage, 'set').mockImplementation(() => {});
+
+		// Act
+		fireEvent(window, new PopStateEvent('popstate'));
+
+		// Assert
+		expect(fixture.componentInstance.currentPage()).toBe(42);
+		expect(fixture.componentInstance.currentPage.set).not.toHaveBeenCalled();
 	});
 
 	describe('specifying a custom template', () => {
@@ -163,7 +179,7 @@ describe('NgSignalPaginationComponent', () => {
 	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgSignalPaginationComponent<Show>>> => {
 		return (await render(NgSignalPaginationComponent, {
 			inputs: { data: getShows(), config: { nrOfItemsPerPage } },
-			providers: [{ provide: Router, useValue: routerMock }],
+			providers: [{ provide: SimpleQueryStringService, useValue: simpleQueryStringServiceMock }],
 		})) as RenderResult<NgSignalPaginationComponent<Show>>;
 	};
 });
