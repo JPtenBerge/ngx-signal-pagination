@@ -1,4 +1,4 @@
-import { Show } from './show.spec';
+import { Show } from './show';
 
 export const getShows = (): Show[] => {
 	return [

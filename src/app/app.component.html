@@ -40,4 +40,11 @@
 
 <h2 class="text-2xl mb-2 mt-5">Async data retrieval</h2>
 
-To be done.
+<div class="flex flex-col-reverse">
+	<ng-signal-async-pagination [query]="todoQuery" (pageChange)="goToPage($event)" [config]="paging" #asyncPagination />
+	<ul class="list-[square] ml-4">
+		@for (todo of asyncPagination.pageData(); track todo) {
+			<li>{{ todo }}</li>
+		}
+	</ul>
+</div>
