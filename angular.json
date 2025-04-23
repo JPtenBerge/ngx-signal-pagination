@@ -3,71 +3,31 @@
 	"version": 1,
 	"newProjectRoot": "projects",
 	"projects": {
-		"ng-signal-pagination": {
-			"projectType": "application",
+		"ngx-signal-pagination": {
+			"projectType": "library",
 			"schematics": {
 				"@schematics/angular:component": {
 					"changeDetection": "OnPush"
 				}
 			},
-			"root": "",
-			"sourceRoot": "src",
-			"prefix": "app",
+			"root": "projects/ngx-signal-pagination",
+			"sourceRoot": "projects/ngx-signal-pagination/src",
+			"prefix": "lib",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:application",
+					"builder": "@angular-devkit/build-angular:ng-packagr",
 					"options": {
-						"outputPath": "dist/ng-signal-pagination",
-						"index": "src/index.html",
-						"browser": "src/main.ts",
-						"tsConfig": "tsconfig.app.json",
-						"assets": [
-							{
-								"glob": "**/*",
-								"input": "public"
-							}
-						],
-						"styles": ["src/styles.css"],
-						"scripts": []
+						"project": "projects/ngx-signal-pagination/ng-package.json"
 					},
 					"configurations": {
 						"production": {
-							"budgets": [
-								{
-									"type": "initial",
-									"maximumWarning": "500kB",
-									"maximumError": "1MB"
-								},
-								{
-									"type": "anyComponentStyle",
-									"maximumWarning": "4kB",
-									"maximumError": "8kB"
-								}
-							],
-							"outputHashing": "all"
+							"tsConfig": "projects/ngx-signal-pagination/tsconfig.lib.prod.json"
 						},
 						"development": {
-							"optimization": false,
-							"extractLicenses": false,
-							"sourceMap": true
+							"tsConfig": "projects/ngx-signal-pagination/tsconfig.lib.json"
 						}
 					},
 					"defaultConfiguration": "production"
-				},
-				"serve": {
-					"builder": "@angular-devkit/build-angular:dev-server",
-					"configurations": {
-						"production": {
-							"buildTarget": "ng-signal-pagination:build:production"
-						},
-						"development": {
-							"buildTarget": "ng-signal-pagination:build:development"
-						}
-					},
-					"defaultConfiguration": "development"
-				},
-				"extract-i18n": {
-					"builder": "@angular-devkit/build-angular:extract-i18n"
 				},
 				"test": {
 					"builder": "@analogjs/vitest-angular:test"

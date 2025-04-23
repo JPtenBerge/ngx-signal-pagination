@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
-import { NgSignalPaginationComponent } from './ng-signal-pagination.component';
+import { NgxSignalPaginationComponent } from './ngx-signal-pagination.component';
 import { Show } from '../test-helpers/show';
 import { getShows } from '../test-helpers/shows.data';
 import { SimpleQueryStringService } from '../services/simple-query-string.service';

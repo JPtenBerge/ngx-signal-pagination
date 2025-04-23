@@ -30,11 +30,11 @@ interface SimpleQuery<T> {
 @Component({
 	selector: 'ng-signal-async-pagination',
 	imports: [NgClass, NgTemplateOutlet],
-	templateUrl: './ng-signal-pagination-async.component.html',
-	styleUrl: './ng-signal-pagination-async.component.css',
+	templateUrl: './ngx-signal-pagination-async.component.html',
+	styleUrl: './ngx-signal-pagination-async.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgSignalPaginationAsyncComponent<T> {
+export class NgxSignalPaginationAsyncComponent<T> {
 	simpleQueryString = inject(SimpleQueryStringService);
 
 	query = input.required<CreateQueryResult<T, any>>();
@@ -57,11 +57,14 @@ export class NgSignalPaginationAsyncComponent<T> {
 		return this.simpleQueryString.getPageFromQueryString() ?? 1;
 	});
 	pageChange = output<number>();
-	pages = computedWithPrev<number[]>(prev => {
+	pages = computedWithPrev<number[]>((prev) => {
 		if (this.query().isPending()) return prev ?? [1];
 		if (this.query().isError()) return [1];
 
-		return Array.from({ length: this.query().data().nrOfPages }, (_, index) => index + 1);
+		return Array.from(
+			{ length: this.query().data().nrOfPages },
+			(_, index) => index + 1
+		);
 	});
 	pageData = computed(() => {
 		if (!this.query().data()) return null;

@@ -18,11 +18,11 @@ import { SimpleQueryStringService } from '../services/simple-query-string.servic
 @Component({
 	selector: 'ng-signal-pagination',
 	imports: [NgClass, NgTemplateOutlet],
-	templateUrl: './ng-signal-pagination.component.html',
-	styleUrl: './ng-signal-pagination.component.css',
+	templateUrl: './ngx-signal-pagination.component.html',
+	styleUrl: './ngx-signal-pagination.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgSignalPaginationComponent<T> {
+export class NgxSignalPaginationComponent<T> {
 	simpleQueryString = inject(SimpleQueryStringService);
 
 	data = input.required<T[]>();
