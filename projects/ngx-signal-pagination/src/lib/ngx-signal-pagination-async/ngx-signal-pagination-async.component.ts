@@ -28,7 +28,7 @@ interface SimpleQuery<T> {
 }
 
 @Component({
-	selector: 'ng-signal-async-pagination',
+	selector: 'ngx-signal-async-pagination',
 	imports: [NgClass, NgTemplateOutlet],
 	templateUrl: './ngx-signal-pagination-async.component.html',
 	styleUrl: './ngx-signal-pagination-async.component.css',

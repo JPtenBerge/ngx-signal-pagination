@@ -133,7 +133,7 @@ describe('Component: NgSignalPagination', () => {
 						</ng-template>
 					</ng-signal-pagination>
 				`,
-				imports: [NgSignalPaginationComponent],
+				imports: [NgxSignalPaginationComponent],
 				standalone: true,
 			})
 			class FixtureComponent {}
@@ -153,11 +153,11 @@ describe('Component: NgSignalPagination', () => {
 						</ng-template>
 					</ng-signal-pagination>
 				`,
-				imports: [NgSignalPaginationComponent],
+				imports: [NgxSignalPaginationComponent],
 				standalone: true,
 			})
 			class FixtureComponent {
-				pagination = viewChild.required(NgSignalPaginationComponent);
+				pagination = viewChild.required(NgxSignalPaginationComponent);
 				shows = getShows();
 				paging = { nrOfItemsPerPage: 5 };
 			}
@@ -173,10 +173,10 @@ describe('Component: NgSignalPagination', () => {
 		});
 	});
 
-	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgSignalPaginationComponent<Show>>> => {
-		return (await render(NgSignalPaginationComponent, {
+	const renderPagination = async (nrOfItemsPerPage = 5): Promise<RenderResult<NgxSignalPaginationComponent<Show>>> => {
+		return (await render(NgxSignalPaginationComponent, {
 			inputs: { data: getShows(), config: { nrOfItemsPerPage } },
 			providers: [{ provide: SimpleQueryStringService, useValue: simpleQueryStringServiceMock }],
-		})) as RenderResult<NgSignalPaginationComponent<Show>>;
+		})) as RenderResult<NgxSignalPaginationComponent<Show>>;
 	};
 });

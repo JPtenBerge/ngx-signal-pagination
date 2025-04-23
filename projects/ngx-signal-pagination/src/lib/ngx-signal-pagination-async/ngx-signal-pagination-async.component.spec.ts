@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { fireEvent, render, RenderResult, screen } from '@testing-library/angular';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 
-import { NgSignalPaginationAsyncComponent } from './ng-signal-pagination-async.component';
+import { NgxSignalPaginationAsyncComponent } from './ngx-signal-pagination-async.component';
 import { Show } from '../test-helpers/show';
 import { getShows } from '../test-helpers/shows.data';
 import { SimpleQueryStringService } from '../services/simple-query-string.service';
@@ -183,7 +183,7 @@ describe('Component: NgSignalPaginationAsync', () => {
 
 	const renderPagination = async (
 		nrOfItemsPerPage = 5,
-	): Promise<RenderResult<NgSignalPaginationAsyncComponent<AsyncData<Show>>>> => {
+	): Promise<RenderResult<NgxSignalPaginationAsyncComponent<AsyncData<Show>>>> => {
 		let query = {
 			isSuccess: signal(true),
 			isError: signal(false),
@@ -194,9 +194,9 @@ describe('Component: NgSignalPaginationAsync', () => {
 			data: signal(resolve),
 		} as unknown as CreateQueryResult<AsyncData<Show>, Error>;
 
-		return (await render<NgSignalPaginationAsyncComponent<AsyncData<Show>>>(NgSignalPaginationAsyncComponent, {
+		return (await render<NgxSignalPaginationAsyncComponent<AsyncData<Show>>>(NgxSignalPaginationAsyncComponent, {
 			inputs: { query, config: { nrOfItemsPerPage } },
 			providers: [{ provide: SimpleQueryStringService, useValue: simpleQueryStringServiceMock }],
-		})) as RenderResult<NgSignalPaginationAsyncComponent<AsyncData<Show>>>;
+		})) as RenderResult<NgxSignalPaginationAsyncComponent<AsyncData<Show>>>;
 	};
 });
