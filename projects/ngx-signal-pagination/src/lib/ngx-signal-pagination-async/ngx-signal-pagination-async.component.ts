@@ -10,22 +10,14 @@ import {
 	linkedSignal,
 	output,
 	Signal,
-	signal,
 	TemplateRef,
 } from '@angular/core';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 import { PaginationOptions } from '../types/pagination-options';
 import { SimpleQueryStringService } from '../services/simple-query-string.service';
-import { AsyncData } from '../types/async-data';
 import { CreateQueryResult } from '@tanstack/angular-query-experimental';
 import { computedWithPrev } from '../utils/computed-with-prev';
-
-interface SimpleQuery<T> {
-	isPending: Signal<boolean>;
-	isSuccess: Signal<boolean>;
-	data: Signal<AsyncData<T>>;
-}
 
 @Component({
 	selector: 'ngx-signal-async-pagination',
@@ -57,14 +49,11 @@ export class NgxSignalPaginationAsyncComponent<T> {
 		return this.simpleQueryString.getPageFromQueryString() ?? 1;
 	});
 	pageChange = output<number>();
-	pages = computedWithPrev<number[]>((prev) => {
+	pages = computedWithPrev<number[]>(prev => {
 		if (this.query().isPending()) return prev ?? [1];
 		if (this.query().isError()) return [1];
 
-		return Array.from(
-			{ length: this.query().data().nrOfPages },
-			(_, index) => index + 1
-		);
+		return Array.from({ length: this.query().data().nrOfPages }, (_, index) => index + 1);
 	});
 	pageData = computed(() => {
 		if (!this.query().data()) return null;
