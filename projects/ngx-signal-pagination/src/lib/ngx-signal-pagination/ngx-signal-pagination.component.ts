@@ -16,7 +16,7 @@ import { PaginationOptions } from '../types/pagination-options';
 import { SimpleQueryStringService } from '../services/simple-query-string.service';
 
 @Component({
-	selector: 'ng-signal-pagination',
+	selector: 'ngx-signal-pagination',
 	imports: [NgClass, NgTemplateOutlet],
 	templateUrl: './ngx-signal-pagination.component.html',
 	styleUrl: './ngx-signal-pagination.component.css',
