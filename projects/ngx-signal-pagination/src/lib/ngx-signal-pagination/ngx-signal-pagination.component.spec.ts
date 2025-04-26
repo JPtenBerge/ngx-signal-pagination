@@ -123,7 +123,7 @@ describe('Component: NgSignalPagination', () => {
 		it('renders pages', async () => {
 			@Component({
 				template: `
-					<ng-signal-pagination [data]="shows" [config]="paging" #pagination>
+					<ngx-signal-pagination [data]="shows" [config]="paging" #pagination>
 						<ng-template #paginationTemplate let-pages="pages">
 							<ol>
 								@for (page of pages(); track page) {
@@ -131,7 +131,7 @@ describe('Component: NgSignalPagination', () => {
 								}
 							</ol>
 						</ng-template>
-					</ng-signal-pagination>
+					</ngx-signal-pagination>
 				`,
 				imports: [NgxSignalPaginationComponent],
 				standalone: true,
@@ -146,12 +146,12 @@ describe('Component: NgSignalPagination', () => {
 		it('binds next and previous', async () => {
 			@Component({
 				template: `
-					<ng-signal-pagination [data]="shows" [config]="paging" #pagination>
+					<ngx-signal-pagination [data]="shows" [config]="paging" #pagination>
 						<ng-template #paginationTemplate let-next="next" let-previous="previous">
 							<button (click)="next()">next</button>
 							<button (click)="previous()">prev</button>
 						</ng-template>
-					</ng-signal-pagination>
+					</ngx-signal-pagination>
 				`,
 				imports: [NgxSignalPaginationComponent],
 				standalone: true,
