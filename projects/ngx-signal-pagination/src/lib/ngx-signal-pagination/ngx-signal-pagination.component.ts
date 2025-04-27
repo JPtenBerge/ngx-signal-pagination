@@ -59,11 +59,15 @@ export class NgxSignalPaginationComponent<T> {
 	}
 
 	next() {
+		if (this.currentPage() >= this.pages().length) return;
+
 		this.currentPage.update(current => current + 1);
 		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}
 
 	previous() {
+		if (this.currentPage() <= 1) return;
+
 		this.currentPage.update(current => current - 1);
 		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}

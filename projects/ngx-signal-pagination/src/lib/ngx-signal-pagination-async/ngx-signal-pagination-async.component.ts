@@ -59,21 +59,14 @@ export class NgxSignalPaginationAsyncComponent<T> {
 		if (!this.query().data()) return null;
 		if (!('pagedData' in this.query().data())) return null;
 
-		console.log('pageData', this.query().data());
+		this.simpleQueryString.setPageInQueryString(this.query().data().currentPage);
 		return this.query().data().pagedData;
-		// let start = (this.currentPage() - 1) * this.config().nrOfItemsPerPage;
-		// let end = start + this.config().nrOfItemsPerPage;
-		// return this.data().slice(start, end);
 	});
 
 	constructor() {
 		this.next = this.next.bind(this);
 		this.previous = this.previous.bind(this);
 		this.goTo = this.goTo.bind(this);
-
-		effect(() => {
-			console.log('andere data', this.query().data());
-		});
 	}
 
 	goTo(page: number) {
@@ -82,11 +75,15 @@ export class NgxSignalPaginationAsyncComponent<T> {
 	}
 
 	next() {
+		if (this.currentPage() >= this.pages().length) return;
+
 		this.pageChange.emit(this.currentPage() + 1);
 		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}
 
 	previous() {
+		if (this.currentPage() <= 1) return;
+
 		this.pageChange.emit(this.currentPage() - 1);
 		this.simpleQueryString.setPageInQueryString(this.currentPage());
 	}
