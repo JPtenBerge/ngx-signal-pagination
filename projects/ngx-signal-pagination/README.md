@@ -1,63 +1,88 @@
-# NgxSignalPagination
+# ngx-signal-pagination
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+Pagination for Angular, powered by signals 🚦.
 
-## Code scaffolding
+Note: this is my first public npm project. I'm working on TypeScript types.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Features
 
-```bash
-ng generate component component-name
+- Works with in-memory data as well as fetching data from server on page change
+  - With the help of [@tanstack/angular-query-experimental](https://tanstack.com/query/latest/docs/framework/angular/overview)
+- Keep it simple by using the predefined template
+- Take control by rolling with your own template
+- Page number is reflected in URL
+
+### Caveats
+
+- Page number is reflected in URL, but is not unique for all pagination controls. Having multiple pagination controls on one page is not currently supported.
+
+## Installation
+
+```sh
+npm install ngx-signal-pagination
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Usage
 
-```bash
-ng generate --help
+Import the pagination components with your components:
+
+```ts
+@Component({
+    selector: 'omg-awesome',
+    imports: [NgxSignalPaginationComponent, NgxSignalPaginationAsyncComponent],
+    templateUrl: './awesome.component.html',
+})
+export class AwesomeComponent {	/* ... */ }
 ```
 
-## Building
+### With in-memory data
 
-To build the library, run:
-
-```bash
-ng build ngx-signal-pagination
+```html
+<ngx-signal-pagination [data]="shows" [config]="paging" #pagination />
+<ul class="list-[square] ml-4">
+    @for (show of pagination.pageData(); track show.title) {
+        <li>{{ show.title }} gets a {{ show.rating }}</li>
+    }
+</ul>
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+### With in-memory data and a custom template
 
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/ngx-signal-pagination
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```html
+<ngx-signal-pagination [data]="shows" [config]="paging" #paginationCustomTemplate>
+    <ng-template
+        #paginationTemplate
+        let-currentPage="currentPage"
+        let-pages="pages"
+        let-previous="previous"
+        let-next="next"
+        let-goTo="goTo"
+    >
+        <ol class="flex">
+            <li class="p-3" (click)="previous()">previous</li>
+                @for (page of pages(); track page) {
+                    <li class="p-3 border-solid border-amber-300 border-b-2" [class.bg-amber-300]="page === currentPage()" (click)="goTo(page)">
+                        {{ page }}
+                    </li>
+                }
+            <li class="p-3" (click)="next()">next</li>
+        </ol>
+    </ng-template>
+</ngx-signal-pagination>
+<ul class="list-[square] ml-4">
+    @for (show of paginationCustomTemplate.pageData(); track show.title) {
+         <li>{{ show.title }} gets a {{ show.rating }}</li>
+    }
+</ul>
 ```
 
-## Running end-to-end tests
+### With asynchronous data retrieval
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```html
+<ngx-signal-async-pagination [query]="todoQuery" (pageChange)="goToPage($event)" [config]="paging" #asyncPagination />
+<ul class="list-[square] ml-4">
+    @for (todo of asyncPagination.pageData(); track todo) {
+        <li>{{ todo }}</li>
+    }
+</ul>
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
