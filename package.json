@@ -7,6 +7,7 @@
 		"build": "ng build ngx-signal-pagination",
 		"watch": "ng build --watch --configuration development",
 		"publish": "npm publish dist/ngx-signal-pagination",
+		"versionbump": "npm version prerelease && cd .\\projects\\ngx-signal-pagination && npm version prerelease",
 		"test": "ng test"
 	},
 	"dependencies": {
