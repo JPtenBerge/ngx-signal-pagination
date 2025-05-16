@@ -1,8 +1,6 @@
 # ngx-signal-pagination
 
-Pagination for Angular, powered by signals 🚦.
-
-Note: this is my first public npm project. I'm working on TypeScript types.
+Pagination for Angular, powered by signals 🚦
 
 ## Features
 

@@ -6,7 +6,7 @@
 		"start": "ng serve",
 		"build": "ng build ngx-signal-pagination",
 		"watch": "ng build --watch --configuration development",
-		"publish": "npm publish dist/ngx-signal-pagination",
+		"publish": "cd dist/ngx-signal-pagination && npm publish --tag latest",
 		"versionbump": "npm version prerelease && cd .\\projects\\ngx-signal-pagination && npm version prerelease",
 		"test": "ng test"
 	},
