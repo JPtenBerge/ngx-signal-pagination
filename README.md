@@ -115,9 +115,9 @@ Alternatively, you can roll your own template:
 
 ### With asynchronous data retrieval
 
-Asynchronous data retrieval works using the [@tanstack/angular-query-experimental](https://tanstack.com/query/latest/docs/framework/angular/overview). You'll need to define your query, as well as do a bit of page change handling*. 
+Asynchronous data retrieval works using the [@tanstack/angular-query-experimental](https://tanstack.com/query/latest/docs/framework/angular/overview) library. You'll need to define your query, as well as do a bit of page change handling*. 
 
-<small>*I've tried exposing a signal from the pagination component, but this signal not always being there due to the rendering lifecycle made this approach quite cumbersome.</small>
+<sub>*I've tried exposing a signal from the pagination component, but this signal not always being there due to the rendering lifecycle made this approach quite cumbersome.</sub>
 
 First, the TypeScript bits - import the *async* pagination component, define your and define pagination config:
 
