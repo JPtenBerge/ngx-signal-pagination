@@ -1,13 +1,13 @@
 {
 	"name": "ngx-signal-pagination",
-	"version": "0.0.1-beta.12",
+	"version": "0.0.1",
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
 		"build": "ng build ngx-signal-pagination",
 		"watch": "ng build --watch --configuration development",
 		"publish": "cd dist/ngx-signal-pagination && npm publish --tag latest",
-		"versionbump": "npm version prerelease && cd .\\projects\\ngx-signal-pagination && npm version prerelease",
+		"versionbump": "npm version minor && cd .\\projects\\ngx-signal-pagination && npm version minor",
 		"test": "ng test"
 	},
 	"dependencies": {
